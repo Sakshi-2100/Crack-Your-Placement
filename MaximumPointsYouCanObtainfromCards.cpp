@@ -32,3 +32,53 @@ Constraints:
 1 <= cardPoints[i] <= 104
 1 <= k <= cardPoints.length
 */
+
+//Brute Force       Recursion       TC-O(2^k)
+    void maxim(vector<int>& cardPoints, int k, int left, int right, int sum,int& maxSum){
+        if(k==0){
+            if(sum>maxSum)
+                maxSum=sum;
+            return;
+        }
+        k=k-1;
+        sum+=cardPoints[left];
+        maxim(cardPoints,k,left+1,right,sum,maxSum);
+        sum=sum-cardPoints[left]+cardPoints[right];
+        maxim(cardPoints,k,left,right-1,sum,maxSum);
+    }
+
+    
+    int maxScore(vector<int>& cardPoints, int k) {
+        int maxSum=0;
+        maxim(cardPoints,k,0,cardPoints.size()-1,0,maxSum);
+        return maxSum;
+    }
+
+//Approach 2
+    int helper(vector<int>&cardPoints,int k, int left, int right){
+        if(k==0)
+            return 0;
+        return max((cardPoints[left]+helper(cardPoints,k-1,left+1,right)),(cardPoints[right]+helper(cardPoints,k-1,left,right-1)));
+    }
+    int maxScore(vector<int>& cardPoints, int k) {
+        return helper(cardPoints,k,0,cardPoints.size()-1);
+    }
+
+
+//Optimal Approach          Sliding Window Technique        TC-O(k)
+    int maxScore(vector<int>& cardPoints, int k) {
+        int tempSum=0;
+        for(int i=0;i<k;i++){
+            tempSum+=cardPoints[i];
+        }
+        int maxSum=tempSum;
+        if(k==cardPoints.size())
+            return tempSum;
+        int right = cardPoints.size()-1;
+        for(int i=k-1;i>=0;i--){
+            tempSum=tempSum-cardPoints[i]+cardPoints[right];
+            maxSum = max(maxSum,tempSum);
+            right--;
+        }
+        return maxSum;
+    }
