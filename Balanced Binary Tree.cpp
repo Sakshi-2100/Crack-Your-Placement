@@ -47,5 +47,5 @@ public:
     }
     bool isBalanced(TreeNode* root) {
         return height(root)!=-1;
-    }
+    } 
 };
